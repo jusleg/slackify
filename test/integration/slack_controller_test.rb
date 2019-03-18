@@ -78,7 +78,7 @@ class SlackControllerTest < ActionDispatch::IntegrationTest
     post @interactive_callback_url, as: :json, headers: build_webhook_headers(params), params: params
   end
 
-  test "#interactive callback returns the proper following attachement" do
+  test "#interactive_callback returns the proper following attachement" do
     # Setting up the Slack Ruby Client Mock
     options = { actions: [{ "name" => "btn1", "value" => "btn1", "type" => "button" }], callback_id: "dummy_handler#button_clicked" }
     params = build_slack_interactive_callback(options)
@@ -93,6 +93,15 @@ class SlackControllerTest < ActionDispatch::IntegrationTest
     post @interactive_callback_url, as: :json, headers: build_webhook_headers(params), params: params
     assert_equal "{\"attachments\":[{\"text\":\" Button two has been clicked\"}]}", response.body
     assert_response :ok
+  end
+
+  test "#interactive_callback raises error if the handler is not supported" do
+    options = { actions: [{ "name" => "btn2", "value" => "btn2", "type" => "button" }], callback_id: "random_handler#button_clicked" }
+    params = build_slack_interactive_callback(options)
+
+    assert_raise Toddlerbot::Exceptions::HandlerNotSupported do
+      post @interactive_callback_url, as: :json, headers: build_webhook_headers(params), params: params
+    end
   end
 
   test "#slash_command_callback calls the correct handler method" do
@@ -128,6 +137,16 @@ class SlackControllerTest < ActionDispatch::IntegrationTest
     DummyHandler.expects(:slash_command_not_permitted).never
     assert_raise Toddlerbot::Exceptions::MissingSlashPermission do
       post "/toddlerbot/slash/dummy_handler/slash_command_not_permitted", as: :json, headers: build_webhook_headers(params), params: params
+    end
+  end
+
+  test "#slash_command_callback raises an exception if the handler class is not supported" do
+    # Passing in the dummy_handler class into url encoded payload
+    params = "action=slash_command_callback&channel_id=DD6S3EGQG&channel_name=directmessage&command=%2Ftest&controller=slack&handler_class=random_handler_not_permitted&handler_method=slash_command_not_permitted&response_url=https%3A%2F%2Fhooks.slack.com%2Fcommands%2FTEAM1234%2F479282542757%2Fvrgf0tsH3Hpatycs5Qop3M9S&team_domain=toddlerbot&team_id=TEAM1234&text=famingo&token=Wxb5WWeegLMp4cIAohut26Lo&trigger_id=478980323267.2152147568.e30db4037a528bde78146858cadd4dd6&user_id=USER1234&user_name=jusleg\""
+
+    DummyHandler.expects(:slash_command_not_permitted).never
+    assert_raise Toddlerbot::Exceptions::HandlerNotSupported do
+      post "/toddlerbot/slash/random_handler_not_permitted/slash_command_not_permitted", as: :json, headers: build_webhook_headers(params), params: params
     end
   end
 end

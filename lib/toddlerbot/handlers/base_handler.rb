@@ -2,6 +2,8 @@
 
 module Toddlerbot
   class BaseHandler
+    @@supported_handlers = []
+
     class << self
       attr_reader :allowed_slash_methods
 
@@ -15,6 +17,14 @@ module Toddlerbot
         else
           @allowed_slash_methods = Array(element)
         end
+      end
+
+      def inherited(subclass)
+        @@supported_handlers.push(subclass.to_s)
+      end
+
+      def supported_handlers
+        @@supported_handlers
       end
     end
   end

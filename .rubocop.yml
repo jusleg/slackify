@@ -6,5 +6,10 @@ Style/MixinUsage:
   Exclude: 
     - test/dummy/bin/**/*
 
+Style/ClassVars:
+  Enabled: true
+  Exclude:
+    - lib/toddlerbot/handlers/base_handler.rb
+
 AllCops:
   TargetRubyVersion: 2.5
