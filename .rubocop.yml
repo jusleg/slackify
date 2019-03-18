@@ -5,3 +5,6 @@ Style/MixinUsage:
   Enabled: true
   Exclude: 
     - test/dummy/bin/**/*
+
+AllCops:
+  TargetRubyVersion: 2.5

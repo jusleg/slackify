@@ -9,9 +9,10 @@ before_install:
 install:
   - bundle install
 
-jobs:
+jobs:  
   include:
-    - stage: Lint
+    - stage: "Tests + Linting"
+      name: "Linting"
       script: bundle exec rubocop
-    - stage: Tests
-      script: bundle exec rake
+    - script: bundle exec rake   
+      name: "Tests"
