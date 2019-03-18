@@ -67,11 +67,21 @@ module Toddlerbot
 
     def handler_from_callback_id(callback_id)
       class_name, method_name = callback_id.split('#')
-      class_name.camelize.constantize.method(method_name)
+      class_name = class_name.camelize
+
+      raise Toddlerbot::Exceptions::HandlerNotSupported, class_name unless
+        Toddlerbot::BaseHandler.supported_handlers.include?(class_name)
+
+      class_name.constantize.method(method_name)
     end
 
     def verify_handler_slash_permission(handler_class, handler_method)
-      handler = handler_class.camelize.constantize
+      handler_class = handler_class.camelize
+
+      raise Toddlerbot::Exceptions::HandlerNotSupported, handler_class unless
+        Toddlerbot::BaseHandler.supported_handlers.include?(handler_class)
+
+      handler = handler_class.constantize
       raise Toddlerbot::Exceptions::MissingSlashPermission, "#{handler_class}##{handler_method} is missing slash permission" unless
         handler < BaseHandler && handler.allowed_slash_methods.include?(handler_method.to_sym)
     end

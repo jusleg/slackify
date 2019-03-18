@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'toddlerbot'
-  s.version     = '0.1.0'
+  s.version     = '0.1.1'
   s.date        = '2019-03-17'
   s.summary     = 'Rails slackbot framework'
   s.description = 'Slackbot framework for Rails using the Events API'
