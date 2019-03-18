@@ -1,0 +1,17 @@
+language: ruby
+rvm:
+ - 2.5.1
+
+before_install:
+  - "gem update --system"
+  - "gem install bundler"
+
+install:
+  - bundle install
+
+jobs:
+  include:
+    - stage: Lint
+      script: bundle exec rubocop
+    - stage: Tests
+      script: bundle exec rake
