@@ -1,4 +1,4 @@
-# ToddlerBot [![Build Status](https://travis-ci.org/jusleg/toddlerbot.svg?branch=master)](https://travis-ci.org/jusleg/toddlerbot)
+# ToddlerBot [![Build Status](https://travis-ci.org/jusleg/toddlerbot.svg?branch=master)](https://travis-ci.org/jusleg/toddlerbot) [![Gem Version](https://badge.fury.io/rb/toddlerbot.svg)](https://badge.fury.io/rb/toddlerbot)
 
 Toddlerbot is a gem that allows to build slackbots on Rails using the [Event API](https://api.slack.com/events-api) from Slack.
 
