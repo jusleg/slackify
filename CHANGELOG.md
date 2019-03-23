@@ -1,3 +1,6 @@
+##V0.1.3
+Added `remove_unhandled_handler` as a configuration option to disable the unhandled handler.
+
 ## V0.1.2
 
 * Renaming the gem from toddlerbot to slackify.
