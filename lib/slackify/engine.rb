@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Toddlerbot
+module Slackify
   class Engine < Rails::Engine
-    isolate_namespace Toddlerbot
+    isolate_namespace Slackify
   end
 end

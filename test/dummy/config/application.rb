@@ -12,7 +12,7 @@ require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
 Bundler.require(*Rails.groups)
-require "toddlerbot"
+require "slackify"
 
 module Dummy
   class Application < Rails::Application
@@ -24,7 +24,7 @@ module Dummy
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
-    Toddlerbot.configure do |config|
+    Slackify.configure do |config|
       config.slack_bot_token = 'testslacktoken123'
       config.slack_secret_token = '123abcslacksecrettokenabc123'
     end

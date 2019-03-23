@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module Toddlerbot
-  class UnhandledHandler < Toddlerbot::BaseHandler
-    class << self
-      def unhandled(params)
+module Slackify
+  module Handlers
+    class UnhandledHandler < Base
+      def self.unhandled(params)
         slack_client.chat_postMessage(
           as_user: true,
           channel: params[:event][:user],

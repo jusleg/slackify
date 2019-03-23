@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Toddlerbot
+module Slackify
   class SlackController < ActionController::API
     include SlackTokenVerify
 
@@ -51,7 +51,7 @@ module Toddlerbot
     private
 
     def handle_direct_message_event
-      if handler = Toddlerbot.configuration.custom_event_subtype_handlers[params[:event][:subtype]]
+      if handler = Slackify.configuration.custom_event_subtype_handlers[params[:event][:subtype]]
         handler.handle_event(params[:slack])
         head :ok
         return
@@ -60,7 +60,7 @@ module Toddlerbot
       return if params[:event][:subtype] == "bot_message" || params[:event].key?(:bot_id) || params[:event][:hidden]
 
       command = params[:event][:text]
-      Toddlerbot.configuration.handlers.call_command(command, params[:slack])
+      Slackify.configuration.handlers.call_command(command, params[:slack])
     rescue RuntimeError => e
       raise e unless e.message == "Component not found for a command message"
     end
@@ -69,8 +69,8 @@ module Toddlerbot
       class_name, method_name = callback_id.split('#')
       class_name = class_name.camelize
 
-      raise Toddlerbot::Exceptions::HandlerNotSupported, class_name unless
-        Toddlerbot::BaseHandler.supported_handlers.include?(class_name)
+      raise Exceptions::HandlerNotSupported, class_name unless
+        Handlers::Base.supported_handlers.include?(class_name)
 
       class_name.constantize.method(method_name)
     end
@@ -78,12 +78,12 @@ module Toddlerbot
     def verify_handler_slash_permission(handler_class, handler_method)
       handler_class = handler_class.camelize
 
-      raise Toddlerbot::Exceptions::HandlerNotSupported, handler_class unless
-        Toddlerbot::BaseHandler.supported_handlers.include?(handler_class)
+      raise Exceptions::HandlerNotSupported, handler_class unless
+        Handlers::Base.supported_handlers.include?(handler_class)
 
       handler = handler_class.constantize
-      raise Toddlerbot::Exceptions::MissingSlashPermission, "#{handler_class}##{handler_method} is missing slash permission" unless
-        handler < BaseHandler && handler.allowed_slash_methods.include?(handler_method.to_sym)
+      raise Exceptions::MissingSlashPermission, "#{handler_class}##{handler_method} is missing slash permission" unless
+        handler < Handlers::Base && handler.allowed_slash_methods.include?(handler_method.to_sym)
     end
   end
 end

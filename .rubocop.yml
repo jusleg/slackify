@@ -9,7 +9,7 @@ Style/MixinUsage:
 Style/ClassVars:
   Enabled: true
   Exclude:
-    - lib/toddlerbot/handlers/base_handler.rb
+    - lib/slackify/handlers/base.rb
 
 AllCops:
   TargetRubyVersion: 2.5

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DummyHandler < Toddlerbot::BaseHandler
+class DummyHandler < Slackify::Handlers::Base
   allow_slash_method :slash_command
 
   class << self
