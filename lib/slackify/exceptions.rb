@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Toddlerbot
+module Slackify
   module Exceptions
     class HandlerNotSupported < StandardError; end
     class InvalidHandler < StandardError; end

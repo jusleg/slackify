@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Toddlerbot
+module Slackify
   module SlackTestHelper
     def build_url_verification_params(**options)
       {
