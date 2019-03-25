@@ -1,4 +1,8 @@
-##V0.1.3
+## V0.1.4
+
+Custom unhandled_handler configuration fix. It wouldn't let you set a custom one as the validation was checking for `is_a?` instead of `<`
+
+## V0.1.3
 Added `remove_unhandled_handler` as a configuration option to disable the unhandled handler.
 
 ## V0.1.2
