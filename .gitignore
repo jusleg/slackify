@@ -11,6 +11,7 @@
 /tmp/
 /test/dummy/log/*
 /test/dummy/tmp/*
+Gemfile.lock
 
 ## Specific to RubyMotion:
 .dat*
