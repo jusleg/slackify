@@ -1,3 +1,7 @@
+## V0.1.5
+
+Update how the `bot_id` is set in the handler configuration. You can disable the slack auth test (which is used to obtain the bot_id) by setting `SLACK_AUTH_SKIP=1` in your environment variables. If you are running in a Rails environment other than production, development or staging and would like to use the bot for real requests, you can trigger a manual auth test by calling `Slackify.configuration.handlers.bot_auth_test`. Gemfile.lock was removed.
+
 ## V0.1.4
 
 Custom unhandled_handler configuration fix. It wouldn't let you set a custom one as the validation was checking for `is_a?` instead of `<`
