@@ -43,16 +43,26 @@ module Slackify
         end
       end
 
+      def bot_auth_test
+        @bot_id = Slackify.configuration.slack_client.auth_test.fetch('user_id')
+        Rails.logger.debug("[Slackify] Bot successfully authenticated to Slack")
+        true
+      rescue KeyError
+        raise "[Slackify] The bot did not successfully authenticate to Slack"
+      end
+
       private
 
       def environment_configurations
-        @bot_id =
-          case Rails.env
-          when 'production', 'staging', 'development'
-            Slackify.configuration.slack_client.auth_test['user_id']
-          when 'test'
-            ''
-          end
+        if %w(production staging development).exclude?(Rails.env) || skip_auth?
+          @bot_id = 'dummy_bot_id'
+        else
+          bot_auth_test
+        end
+      end
+
+      def skip_auth?
+        ENV['SLACKIFY_AUTH_SKIP'] == '1'
       end
 
       def read_handlers_yaml

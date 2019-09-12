@@ -12,4 +12,4 @@ Style/ClassVars:
     - lib/slackify/handlers/base.rb
 
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.6
