@@ -9,6 +9,8 @@ module Slackify
     def event_callback
       if params[:type] == "url_verification"
         render plain: params["challenge"]
+      elsif Slackify.configuration.custom_event_type_handlers[params[:event][:type]]
+        handle_custom_event_type
       elsif params[:event][:type] == "message"
         handle_direct_message_event
         head :ok
@@ -51,7 +53,7 @@ module Slackify
     private
 
     def handle_direct_message_event
-      if handler = Slackify.configuration.custom_event_subtype_handlers[params[:event][:subtype]]
+      if handler = Slackify.configuration.custom_message_subtype_handlers[params[:event][:subtype]]
         handler.handle_event(params[:slack])
         head :ok
         return
@@ -63,6 +65,11 @@ module Slackify
       Slackify.configuration.handlers.call_command(command, params[:slack])
     rescue RuntimeError => e
       raise e unless e.message == "Component not found for a command message"
+    end
+
+    def handle_custom_event_type
+      Slackify.configuration.custom_event_type_handlers[params[:event][:type]].handle_event(params[:slack])
+      head :ok
     end
 
     def handler_from_callback_id(callback_id)

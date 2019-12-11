@@ -8,7 +8,8 @@ Slackify is a gem that allows to build slackbots on Rails using the [Event API](
     * [Plain messages](#handling-plain-messages)
     * [Interactive messages](#handling-interactive-messages)
     * [Slash Command](#handling-slash-commands)
-    * [Custom handler for event subtypes](#custom-handler-for-event-subtypes)
+    * [Custom handler for message subtypes](#custom-handler-for-message-subtypes)
+    * [Custom handler for event types](#custom-handler-for-event-types)
     * [Custom unhandled handler](#custom-unhandled-handler)
   * [Slack client](#slack-client)
     * [Sending a simple message](#sending-a-simple-message)
@@ -85,17 +86,29 @@ class DummyHandler < Slackify::Handlers::Base
 end
 ```
 
-### Custom handler for event subtypes
+### Custom handler for message subtypes
 
-If you wish to add more functionalities to your bot, you can specify define new behaviours for different event subtypes. You can specify a hash with the event subtype as a key and the handler class as the value. Slackify will call `.handle_event` on your class and pass the controller params as parameters.
+If you wish to add more functionalities to your bot, you can specify define new behaviours for different message subtypes. You can specify a hash with the event subtype as a key and the handler class as the value. Slackify will call `.handle_event` on your class and pass the controller params as parameters.
 
 ```ruby
-Slackify.configuration.custom_event_subtype_handlers = {
+Slackify.configuration.custom_message_subtype_handlers = {
+  file_share: MessageImageHandler
+}
+```
+
+In this example, all message of subtype `file_share` will be sent to the `MessageImageHandler` class.
+
+### Custom handler for event types
+
+If you wish to add more functionalities to your bot, you can specify define new behaviours for different event types. You can specify a hash with the event type as a key and the handler class as the value. Slackify will call `.handle_event` on your class and pass the controller params as parameters.
+
+```ruby
+Slackify.configuration.custom_event_type_handlers = {
   file_share: ImageHandler
 }
 ```
 
-In this example, all events of subtype `file_share` will be sent to the `ImageHandler` class.
+In this example, all events of type `file_share` will be sent to the `ImageHandler` class.
 
 ### Custom unhandled handler
 
@@ -223,7 +236,7 @@ Slackify.load_handlers
 ```ruby
 # config/initializers/slackify.rb
 Slackify.load_handlers
-Slackify.configuration.custom_event_subtype_handlers = {
+Slackify.configuration.custom_message_subtype_handlers = {
   file_share: ImageHandler,
   channel_join: JoinHandler,
   ...
