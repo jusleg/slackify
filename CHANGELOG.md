@@ -1,3 +1,7 @@
+## V0.2.0
+
+Update `custom_event_subtype_handlers` to `custom_message_subtype_handlers` and add support for `custom_event_type_handlers`. This is a breaking change since we rename the field that was previously used. To fix, update any calls from `custom_event_subtype_handlers` to `custom_message_subtype_handlers` and you should be good to go.
+
 ## V0.1.5
 
 Update how the `bot_id` is set in the handler configuration. You can disable the slack auth test (which is used to obtain the bot_id) by setting `SLACK_AUTH_SKIP=1` in your environment variables. If you are running in a Rails environment other than production, development or staging and would like to use the bot for real requests, you can trigger a manual auth test by calling `Slackify.configuration.handlers.bot_auth_test`. Gemfile.lock was removed.
