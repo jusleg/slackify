@@ -23,10 +23,5 @@ module Dummy
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
-
-    Slackify.configure do |config|
-      config.slack_bot_token = 'testslacktoken123'
-      config.slack_secret_token = '123abcslacksecrettokenabc123'
-    end
   end
 end

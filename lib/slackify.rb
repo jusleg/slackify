@@ -4,6 +4,7 @@ require 'slackify/configuration'
 require 'slackify/engine'
 require 'slackify/exceptions'
 require 'slackify/handlers'
+require 'slackify/router'
 
 module Slackify
   class << self
@@ -18,10 +19,6 @@ module Slackify
 
     def configure
       yield(configuration)
-    end
-
-    def load_handlers
-      @configuration.handlers = Handlers::Configuration.new
     end
   end
 end
