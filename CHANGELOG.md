@@ -1,3 +1,7 @@
+## V0.2.1 (UPCOMING)
+
+* Add code documentation and improve exception message
+
 ## V0.2.0
 
 Update `custom_event_subtype_handlers` to `custom_message_subtype_handlers` and add support for `custom_event_type_handlers`. This is a breaking change since we rename the field that was previously used. To fix, update any calls from `custom_event_subtype_handlers` to `custom_message_subtype_handlers` and you should be good to go.

@@ -18,7 +18,7 @@ module Slackify
     end
 
     def unhandled_handler=(handler)
-      raise Exceptions::InvalidHandler, "#{handler.class} is not a subclass of Slackify::Handlers::Base" unless
+      raise HandlerNotSupported, "#{handler.class} is not a subclass of Slackify::Handlers::Base" unless
         handler < Handlers::Base
 
       @unhandled_handler = handler

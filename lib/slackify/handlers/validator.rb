@@ -2,7 +2,10 @@
 
 module Slackify
   module Handlers
+    # Simple validator for handlers. It will blow your app up on the
+    # configuration step instead of crashing when handling production requests.
     class Validator
+      # Checks if your handler hash is valid. It's pass or raise 🧨💥
       def self.verify_handler_integrity(handler)
         handler_name = handler.keys.first
         handler_class = handler_name.camelize.constantize
