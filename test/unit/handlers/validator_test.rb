@@ -83,7 +83,7 @@ module Slackify
           Validator.verify_handler_integrity(handler_hash)
         end
         assert_equal "dummy_handler is not valid: [wazzzzzzaaa]: No regex was provided. No valid action was provided.",
-          exception.message
+                     exception.message
       end
 
       test "#verify_handler_integrity raises if the handler doesn't exist" do

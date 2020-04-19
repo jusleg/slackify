@@ -247,6 +247,18 @@ Slackify.configure do |config|
 end
 ```
 
+8. **Handle bot messages** (Highly optional)
+If you want your bot to accept other bot messages (which you probably should not do), you can. In the configuration step, you can set an array of whitelisted bot ids.
+
+```ruby
+# config/initializers/slackify.rb
+Slackify.configure do |config|
+...
+config.whitelisted_bot_ids = ['abc123', 'def456']
+...
+end
+```
+
 **At this point, you are ready to go 😄**
 
 
