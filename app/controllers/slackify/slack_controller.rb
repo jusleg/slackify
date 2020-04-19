@@ -62,7 +62,7 @@ module Slackify
       return if params[:event][:subtype] == "bot_message" || params[:event].key?(:bot_id) || params[:event][:hidden]
 
       command = params[:event][:text]
-      Slackify.configuration.handlers.call_command(command, params[:slack])
+      Slackify::Router.call_command(command, params[:slack])
     rescue RuntimeError => e
       raise e unless e.message == "Component not found for a command message"
     end

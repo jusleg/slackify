@@ -46,7 +46,7 @@ module Slackify
     test "#event_callback call the handlers for an IM event" do
       params = build_slack_message_params(event: { channel_type: "im" })
 
-      Slackify.configuration.handlers.expects(:call_command).with(
+      Slackify::Router.expects(:call_command).with(
         params[:event][:text],
         ActionController::Parameters.new(params)
       )
