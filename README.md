@@ -218,29 +218,45 @@ First, you'll need to create a new app on slack. Head over to [slack api](https:
     Under the setting section, click "install app" and proceed to install the app to the workspace. Once the app is installed, go back to the "install app" page and copy the Bot User OAuth Access Token.
 
 6. **Configure Slackify**
+Add a new initializer with the following code
+
 ```ruby
+# config/initializers/slackify.rb
 Slackify.configure do |config|
   config.slack_bot_token = "xoxb-sdkjlkjsdflsd..."
   config.slack_secret_token = "1234dummysecret"
 end
 ```
 
-7. **Add an initializer**
+7. **Define handlers specific subtypes** (Optional)
+You can set custom [message subtype](https://api.slack.com/events/message) handlers or custom [event type](https://api.slack.com/events) handlers inside your configuration
+
 ```ruby
 # config/initializers/slackify.rb
-Slackify.load_handlers
+Slackify.configure do |config|
+  config.slack_bot_token = "xoxb-sdkjlkjsdflsd..."
+  config.slack_secret_token = "1234dummysecret"
+  config.custom_message_subtype_handlers = {
+    file_share: ImageHandler,
+    channel_join: JoinHandler,
+    ...
+  }
+  config.custom_event_type_handlers = {
+    app_mention: ...
+  }
+end
 ```
 
-8. **Define handlers specific subtypes** (Optional)
+8. **Handle bot messages** (Highly optional)
+If you want your bot to accept other bot messages (which you probably should not do), you can. In the configuration step, you can set an array of whitelisted bot ids.
 
 ```ruby
 # config/initializers/slackify.rb
-Slackify.load_handlers
-Slackify.configuration.custom_message_subtype_handlers = {
-  file_share: ImageHandler,
-  channel_join: JoinHandler,
-  ...
-}
+Slackify.configure do |config|
+...
+config.whitelisted_bot_ids = ['abc123', 'def456']
+...
+end
 ```
 
 **At this point, you are ready to go 😄**

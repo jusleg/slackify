@@ -1,3 +1,12 @@
+## V0.3.0
+
+* Add code documentation and improve exception message
+* Add whitelisting of bot ids in the configuration through `whitelisted_bot_ids=`
+* Refactored Handler configuration into `Slackify::Router` and `Slackify::Handlers::Factory`
+* Improved testing
+* Remove the need to perform `Slackify.load_handler`
+* **Breaking change:** Given that we now load the handlers on `Slack.configure`, the configuration step done in `config/application.rb` will have to be done in an initializer to have all the handler class loaded. 
+
 ## V0.2.0
 
 Update `custom_event_subtype_handlers` to `custom_message_subtype_handlers` and add support for `custom_event_type_handlers`. This is a breaking change since we rename the field that was previously used. To fix, update any calls from `custom_event_subtype_handlers` to `custom_message_subtype_handlers` and you should be good to go.

@@ -59,10 +59,13 @@ module Slackify
         return
       end
 
-      return if params[:event][:subtype] == "bot_message" || params[:event].key?(:bot_id) || params[:event][:hidden]
+      return if (params[:event][:subtype] == "bot_message" ||
+        params[:event].key?(:bot_id) ||
+        params[:event][:hidden]) &&
+                Slackify.configuration.whitelisted_bot_ids.exlude?(params.dig(:event, :bot_id))
 
       command = params[:event][:text]
-      Slackify.configuration.handlers.call_command(command, params[:slack])
+      Slackify::Router.call_command(command, params[:slack])
     rescue RuntimeError => e
       raise e unless e.message == "Component not found for a command message"
     end
@@ -76,7 +79,7 @@ module Slackify
       class_name, method_name = callback_id.split('#')
       class_name = class_name.camelize
 
-      raise Exceptions::HandlerNotSupported, class_name unless
+      raise Exceptions::HandlerNotSupported, "#{class_name} is not a subclass of Slackify::Handlers::Base" unless
         Handlers::Base.supported_handlers.include?(class_name)
 
       class_name.constantize.method(method_name)
@@ -85,7 +88,7 @@ module Slackify
     def verify_handler_slash_permission(handler_class, handler_method)
       handler_class = handler_class.camelize
 
-      raise Exceptions::HandlerNotSupported, handler_class unless
+      raise Exceptions::HandlerNotSupported, "#{handler_class} is not a subclass of Slackify::Handlers::Base" unless
         Handlers::Base.supported_handlers.include?(handler_class)
 
       handler = handler_class.constantize
