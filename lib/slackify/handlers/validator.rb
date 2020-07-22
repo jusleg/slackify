@@ -19,8 +19,16 @@ module Slackify
         handler.dig(handler_name, 'commands').each do |command|
           command_errors = []
 
-          unless command['regex'].is_a?(Regexp)
+          unless command['regex'] || command['base_command']
+            command_errors.append('No regex or base command was provided.')
+          end
+
+          unless command['regex'].nil? || command['regex'].is_a?(Regexp)
             command_errors.append('No regex was provided.')
+          end
+
+          unless command['base_command'].nil? || command['base_command'].is_a?(String)
+            command_errors.append('No base command was provided.')
           end
 
           unless !command['action'].to_s.strip.empty? && handler_class.respond_to?(command['action'])

@@ -67,6 +67,32 @@ To add a new handler, you can add a new file under `app/handlers/` and start add
 
 **Note:** The regex supports [named capture](https://www.regular-expressions.info/named.html). In this example, we have a name example of `sentence`. When the handler command will be called, a key in the parameter hash will be added: `command_arguments`. This key will point to a hash of the capture name and value. In this case, `command_arguments => {sentence: "the sentence you wrote"}`
 
+### Handling messages with defined parameters
+
+The regular expression matching in the previous example provides a mechanism to supply named parameters to a method. However, many handlers may want to use named & typed parameters. This can be done using the `base_command` and `parameters` options.
+
+We can rewrite the command above to
+
+```yaml
+- repeat_handler:
+    commands:
+      - name: Repeat
+        description: "`repeat [sentence]`: Repeats the sentence you wrote"
+        base_command: "repeat"
+        parameters:
+          - sentence: string
+          - times: 10
+        action: repeat
+```
+
+And call the command with
+
+`/slackify repeat sentence="Why hullo there" times=10`
+
+This will supply a command arguments that are typed and coerced to the defined types:
+
+`command_arguments => {sentence: "Why hullo there", time: 10}`
+
 ### Handling interactive messages
 
 When sending an interactive message to a user, slack let's you define the `callback_id`. The app uses the callback id to select the proper handler for the message that was sent. The callback id must follow the given format: `class_name#method_name`. For instance if you set the callback id to `repeat_handler#repeat`, then `RepeatHandler#repeat` will be called. Adding new handlers does not require to update the `config/handlers.yml` configuration. You only need to update the callback id to define the proper handler to be used when you send an interactive message.

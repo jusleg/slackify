@@ -47,7 +47,7 @@ module Slackify
         exception = assert_raises(Exceptions::InvalidHandler) do
           Validator.verify_handler_integrity(handler_hash)
         end
-        assert_equal "dummy_handler is not valid: [wazzzzzzaaa]: No regex was provided.", exception.message
+        assert_equal "dummy_handler is not valid: [wazzzzzzaaa]: No regex or base command was provided.", exception.message
       end
 
       test "#verify_handler_integrity raises if the command doesn't have a valid action" do
@@ -82,8 +82,52 @@ module Slackify
         exception = assert_raises(Exceptions::InvalidHandler) do
           Validator.verify_handler_integrity(handler_hash)
         end
-        assert_equal "dummy_handler is not valid: [wazzzzzzaaa]: No regex was provided. No valid action was provided.",
-                     exception.message
+        assert_equal(
+          "dummy_handler is not valid: [wazzzzzzaaa]: No regex or base command was provided. No valid action was provided.",
+          exception.message
+        )
+      end
+
+      test "#verify_handler_integrity raises invalid regex error" do
+        handler_hash = {
+          "dummy_handler" => {
+            "commands" => [{
+              "description" => 'A nice method',
+              "action" => 'doesnt_exist',
+              "name" => 'wazzzzzzaaa',
+              "regex" => 123,
+            }]
+          }
+        }
+
+        exception = assert_raises(Exceptions::InvalidHandler) do
+          Validator.verify_handler_integrity(handler_hash)
+        end
+        assert_equal(
+          "dummy_handler is not valid: [wazzzzzzaaa]: No regex was provided. No valid action was provided.",
+          exception.message
+        )
+      end
+
+      test "#verify_handler_integrity raises invalid base command error" do
+        handler_hash = {
+          "dummy_handler" => {
+            "commands" => [{
+              "description" => 'A nice method',
+              "action" => 'doesnt_exist',
+              "name" => 'wazzzzzzaaa',
+              "base_command" => 123,
+            }]
+          }
+        }
+
+        exception = assert_raises(Exceptions::InvalidHandler) do
+          Validator.verify_handler_integrity(handler_hash)
+        end
+        assert_equal(
+          "dummy_handler is not valid: [wazzzzzzaaa]: No base command was provided. No valid action was provided.",
+          exception.message
+        )
       end
 
       test "#verify_handler_integrity raises if the handler doesn't exist" do
