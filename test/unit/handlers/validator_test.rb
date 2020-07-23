@@ -93,7 +93,7 @@ module Slackify
           "dummy_handler" => {
             "commands" => [{
               "description" => 'A nice method',
-              "action" => 'doesnt_exist',
+              "action" => 'cool_command',
               "name" => 'wazzzzzzaaa',
               "regex" => 123,
             }]
@@ -104,7 +104,7 @@ module Slackify
           Validator.verify_handler_integrity(handler_hash)
         end
         assert_equal(
-          "dummy_handler is not valid: [wazzzzzzaaa]: No regex was provided. No valid action was provided.",
+          "dummy_handler is not valid: [wazzzzzzaaa]: No regex was provided.",
           exception.message
         )
       end
@@ -114,7 +114,7 @@ module Slackify
           "dummy_handler" => {
             "commands" => [{
               "description" => 'A nice method',
-              "action" => 'doesnt_exist',
+              "action" => 'cool_command',
               "name" => 'wazzzzzzaaa',
               "base_command" => 123,
             }]
@@ -125,7 +125,51 @@ module Slackify
           Validator.verify_handler_integrity(handler_hash)
         end
         assert_equal(
-          "dummy_handler is not valid: [wazzzzzzaaa]: No base command was provided. No valid action was provided.",
+          "dummy_handler is not valid: [wazzzzzzaaa]: No base command was provided.",
+          exception.message
+        )
+      end
+
+      test "#verify_handler_integrity raises conflict when regex and base_command is used" do
+        handler_hash = {
+          "dummy_handler" => {
+            "commands" => [{
+              "description" => 'A nice method',
+              "action" => 'cool_command',
+              "name" => 'wazzzzzzaaa',
+              "base_command" => "foo",
+              "regex" => /wazza/,
+            }]
+          }
+        }
+
+        exception = assert_raises(Exceptions::InvalidHandler) do
+          Validator.verify_handler_integrity(handler_hash)
+        end
+        assert_equal(
+          "dummy_handler is not valid: [wazzzzzzaaa]: Regex and base_command cannot be used in the same handler.",
+          exception.message
+        )
+      end
+
+      test "#verify_handler_integrity raises conflict when regex and parameters is used" do
+        handler_hash = {
+          "dummy_handler" => {
+            "commands" => [{
+              "description" => 'A nice method',
+              "action" => 'cool_command',
+              "name" => 'wazzzzzzaaa',
+              "parameters" => [{"integer_param"=> "int"}],
+              "regex" => /wazza/,
+            }]
+          }
+        }
+
+        exception = assert_raises(Exceptions::InvalidHandler) do
+          Validator.verify_handler_integrity(handler_hash)
+        end
+        assert_equal(
+          "dummy_handler is not valid: [wazzzzzzaaa]: Regex and parameters cannot be used in the same handler.",
           exception.message
         )
       end
