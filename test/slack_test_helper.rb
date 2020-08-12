@@ -37,14 +37,21 @@ module Slackify
       {
         payload: {
           type: "interactive_message",
-          actions: [
-            {
-              name: "btn1",
-              value: "btn1",
-              type: "button",
-            }
-          ],
-          callback_id: "dummy_handler#cool_command",
+          view: {
+            callback_id: "dummy_handler#cool_command",
+            type: 'modal',
+            title: {
+              type: 'plain_text',
+              text: 'Modal with inputs'
+            },
+            actions: [
+              {
+                name: "btn1",
+                value: "btn1",
+                type: "button",
+              }
+            ],
+          },
           team: {
             id: "TEAM1234",
             domain: "famingo",

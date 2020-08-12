@@ -21,7 +21,8 @@ module Slackify
 
     def interactive_callback
       parsed_payload = JSON.parse(params[:payload])
-      response = handler_from_callback_id(parsed_payload["callback_id"]).call(parsed_payload)
+      view_data = parsed_payload['view']
+      response = handler_from_callback_id(view_data['callback_id']).call(parsed_payload)
       if !response.nil?
         Timeout.timeout(SLACK_TIMEOUT_SECONDS) do
           render json: response
@@ -30,7 +31,7 @@ module Slackify
         head :ok
       end
     rescue Timeout::Error
-      raise Timeout::Error, "Slack interactive callback timed out for #{parsed_payload['callback_id']}"
+      raise Timeout::Error, "Slack interactive callback timed out for #{view_data['callback_id']}"
     end
 
     def slash_command_callback
