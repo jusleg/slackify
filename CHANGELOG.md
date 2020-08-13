@@ -1,3 +1,7 @@
+## V0.3.2
+
+* Add support for interactive block payloads ([b6cf1db](https://github.com/jusleg/slackify/commit/b6cf1dbb47b832037ebff56054efa27c9e3251dc)) by [@drose-shopify](https://github.com/drose-shopify)
+
 ## V0.3.0
 
 * Add code documentation and improve exception message
