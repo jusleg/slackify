@@ -13,3 +13,6 @@ Style/ClassVars:
 
 AllCops:
   TargetRubyVersion: 2.6
+
+Gemspec/RequiredRubyVersion:
+  Enabled: false
