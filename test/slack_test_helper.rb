@@ -37,6 +37,49 @@ module Slackify
       {
         payload: {
           type: "interactive_message",
+          view: {
+            callback_id: "dummy_handler#cool_command",
+            type: 'modal',
+            title: {
+              type: 'plain_text',
+              text: 'Modal with inputs'
+            },
+          },
+          actions: [
+            {
+              name: "btn1",
+              value: "btn1",
+              type: "button",
+            }
+          ],
+          team: {
+            id: "TEAM1234",
+            domain: "famingo",
+          },
+          channel: {
+            id: "CHANNEL1234",
+            name: "famingo-labs",
+          },
+          user: {
+            id: "USER1234",
+            name: "jusleg",
+          },
+          action_ts: "1458170917.164398",
+          message_ts: "1458170866.000004",
+          attachment_id: "1",
+          token: "testslacktoken123",
+          original_message: {
+
+          },
+          trigger_id: "13345224609.738474920.8088930838d88f008e0"
+        }.deep_merge(options).to_json,
+      }
+    end
+
+    def build_legacy_slack_interactive_callback(**options)
+      {
+        payload: {
+          type: "interactive_message",
           actions: [
             {
               name: "btn1",
@@ -62,10 +105,9 @@ module Slackify
           attachment_id: "1",
           token: "testslacktoken123",
           original_message: {
-
           },
           trigger_id: "13345224609.738474920.8088930838d88f008e0"
-        }.deep_merge(options).to_json,
+        }.deep_merge(options).to_json
       }
     end
 
