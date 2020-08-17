@@ -16,6 +16,8 @@ module Slackify
           built_command.regex = command['regex']
           built_command.handler = handler.name.camelize.constantize.method(command['action'])
           built_command.description = command['description']
+          built_command.friendly_name = "#{handler.name}##{command['action']}"
+
           handler.commands << built_command.freeze
         end
 

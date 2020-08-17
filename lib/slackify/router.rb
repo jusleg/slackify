@@ -18,11 +18,16 @@ module Slackify
       # Call command based on message string
       def call_command(message, params)
         command = matching_command(message)
+
         if command.nil?
+          Slackify.logger.info("[Slackify] no handler matched message: #{message}")
           return unless Slackify.configuration.unhandled_handler
 
           Slackify.configuration.unhandled_handler.unhandled(params)
+
         else
+          Slackify.logger.info("[Slackify] message being routed to handler: #{command.friendly_name}")
+
           new_params = params.merge(command_arguments: command.regex.match(message).named_captures)
           command.handler.call(new_params)
         end
