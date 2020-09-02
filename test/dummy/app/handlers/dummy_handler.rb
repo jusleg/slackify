@@ -36,5 +36,13 @@ class DummyHandler < Slackify::Handlers::Base
     def slash_command_not_permitted(_params)
       "this should never be called"
     end
+
+    def method_3_command(params)
+      puts "this takes args; "\
+        "int: #{params[:command_arguments][:integer_param]}, "\
+        "bool: #{params[:command_arguments][:bool_param]}, "\
+        "string: #{params[:command_arguments][:string_param]}, "\
+        "float: #{params[:command_arguments][:float_param]}"
+    end
   end
 end

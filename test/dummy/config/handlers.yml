@@ -1,13 +1,19 @@
--  
-  dummy_handler:
+- dummy_handler:
     commands:
-      -
-        description: method 1
-        regex: !ruby/regexp '/wazza/'
+      - description: method 1
+        regex: !ruby/regexp "/^wazza/"
         action: cool_command
         name: method 1
-      -
-        description: method 2
-        regex: !ruby/regexp '/foo/'
+      - description: method 2
+        regex: !ruby/regexp "/^foo/"
         action: another_command
         name: method 2
+      - description: method 3 with args
+        base_command: "method3"
+        parameters:
+          - integer_param: int
+          - string_param: string
+          - float_param: float
+          - bool_param: boolean
+        action: method_3_command
+        name: method 3

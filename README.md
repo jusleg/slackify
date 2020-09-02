@@ -3,23 +3,25 @@
 Slackify is a gem that allows to build slackbots on Rails using the [Event API](https://api.slack.com/events-api) from Slack.
 
 ## Table of Contents
-* [How does it work](#how-does-it-work)
-  * [Handlers](#handlers)
-    * [Plain messages](#handling-plain-messages)
-    * [Interactive messages](#handling-interactive-messages)
-    * [Slash Command](#handling-slash-commands)
-    * [Custom handler for message subtypes](#custom-handler-for-message-subtypes)
-    * [Custom handler for event types](#custom-handler-for-event-types)
-    * [Custom unhandled handler](#custom-unhandled-handler)
-  * [Slack client](#slack-client)
-    * [Sending a simple message](#sending-a-simple-message)
-    * [Sending an interactive message](#sending-an-interactive-message)
-  * [Slack 3 second reply window](#slack-3-seconds-reply-window)
-* [How to run your own slackify](#how-to-run-your-own-slackify)
-  * [Initial Setup](#initial-setup)
-  * [Slack Setup](#slack-setup)
+
+- [How does it work](#how-does-it-work)
+  - [Handlers](#handlers)
+    - [Plain messages](#handling-plain-messages)
+    - [Interactive messages](#handling-interactive-messages)
+    - [Slash Command](#handling-slash-commands)
+    - [Custom handler for message subtypes](#custom-handler-for-message-subtypes)
+    - [Custom handler for event types](#custom-handler-for-event-types)
+    - [Custom unhandled handler](#custom-unhandled-handler)
+  - [Slack client](#slack-client)
+    - [Sending a simple message](#sending-a-simple-message)
+    - [Sending an interactive message](#sending-an-interactive-message)
+  - [Slack 3 second reply window](#slack-3-seconds-reply-window)
+- [How to run your own slackify](#how-to-run-your-own-slackify)
+  - [Initial Setup](#initial-setup)
+  - [Slack Setup](#slack-setup)
 
 # How does it work
+
 The core logic of the bot resides in its handlers. When the app starts, a list of handler gets initialized from a config file (`config/handlers.yml`). This initializes all the plain message handlers. Out of the box, the application supports three types of events
 
 1. [Plain messages](#handling-plain-messages)
@@ -27,19 +29,19 @@ The core logic of the bot resides in its handlers. When the app starts, a list o
 3. [Slash Command](#handling-slash-commands)
 
 ## Handlers
+
 ### Handling plain messages
+
 These are the basic handlers. They use a regex to identify if they should be called. When a message event gets sent to the bots, the slack controller sends the message to the list of handlers. The message will be checked against the regex of every handler until there is a match. When there is a match, the handler will get called with all the parameters provided by slack. If no handler matches the command, the unhandled handler will be called instead.
 
 Those handlers are configured via the `config/handlers.yml` configuration file. Let's dissect the configuration of a handler.
 
 ```yaml
--
-  repeat_handler:
+- repeat_handler:
     commands:
-      -
-        name: Repeat
+      - name: Repeat
         description: "`repeat [sentence]`: Repeats the sentence you wrote"
-        regex: !ruby/regexp '/^repeat (?<sentence>.+)/i'
+        regex: !ruby/regexp "/^repeat (?<sentence>.+)/i"
         action: repeat
 ```
 
@@ -65,10 +67,38 @@ To add a new handler, you can add a new file under `app/handlers/` and start add
 
 **Note:** The regex supports [named capture](https://www.regular-expressions.info/named.html). In this example, we have a name example of `sentence`. When the handler command will be called, a key in the parameter hash will be added: `command_arguments`. This key will point to a hash of the capture name and value. In this case, `command_arguments => {sentence: "the sentence you wrote"}`
 
+### Handling messages with defined parameters
+
+The regular expression matching in the previous example provides a mechanism to supply named parameters to a method. However, many handlers may want to use named & typed parameters. This can be done using the `base_command` and `parameters` options.
+
+We can rewrite the command above to
+
+```yaml
+- repeat_handler:
+    commands:
+      - name: Repeat
+        description: "`repeat [sentence]`: Repeats the sentence you wrote"
+        base_command: "repeat"
+        parameters:
+          - sentence: string
+          - times: 10
+        action: repeat
+```
+
+And call the command with
+
+`/slackify repeat sentence="Why hullo there" times=10`
+
+This will supply a command arguments that are typed and coerced to the defined types:
+
+`command_arguments => {sentence: "Why hullo there", time: 10}`
+
 ### Handling interactive messages
+
 When sending an interactive message to a user, slack let's you define the `callback_id`. The app uses the callback id to select the proper handler for the message that was sent. The callback id must follow the given format: `class_name#method_name`. For instance if you set the callback id to `repeat_handler#repeat`, then `RepeatHandler#repeat` will be called. Adding new handlers does not require to update the `config/handlers.yml` configuration. You only need to update the callback id to define the proper handler to be used when you send an interactive message.
 
 ### Handling slash commands
+
 The code also has an example of a slash command and its handler (`slash_handler.rb`). To add a command on the bot, head to you app configuration on https://api.slack.com/apps and navigate to Slack Commands using the sidebar. Create a new one. The important part is to set the path properly. To bind with the demo handler, you would need to setup the path like this: `/slackify/slash/slash_handler/example_slash`. The format is `/slackify/slash/[handler_name]/[action_name]`. An app shouldn't have many slash commands. Keep in mind that adding a slash command means that the whole organization will see it.
 
 You will need to whitelist the method in the handler to indicate it can be used as a slash command using `allow_slash_method`
@@ -78,7 +108,7 @@ class DummyHandler < Slackify::Handlers::Base
   allow_slash_method :slash_command
 
   class << self
-    
+
     def slash_command(_params)
       "dummy_handler slash_command() was called"
     end
@@ -134,18 +164,21 @@ end
 ```
 
 ## Slack client
+
 In order to send messages, the [slack ruby client gem](https://github.com/slack-ruby/slack-ruby-client) was used. You can send plain text messages, images and interactive messages. Since the bot was envisioned being more repsonsive than proactive, the client was made available for handlers to call using the `slack_client` method. If you wish to send messages outside of handlers, you can get the slack client by calling `Slackify.configuration.slack_client`
 
 ### Sending a simple message
+
 ```ruby
 slack_client.chat_postMessage(channel: 'MEMBER ID OR CHANNEL ID', text: 'Hello World', as_user: true)
 ```
 
 ### Sending an interactive message
+
 ```ruby
 slack_client.chat_postMessage(
-  channel: 'MEMBER ID OR CHANNEL ID', 
-  as_user: true, 
+  channel: 'MEMBER ID OR CHANNEL ID',
+  as_user: true,
   attachments: [{
     "fallback": "Would you recommend it to customers?",
     "title": "Would you recommend it to customers?",
@@ -171,10 +204,13 @@ slack_client.chat_postMessage(
 ```
 
 ## Slack 3 seconds reply window
+
 Slack introduced a [3 seconds reply window](https://api.slack.com/messaging/interactivity#response) for interactive messages. That means that if you reply to an interactive message or slash command event with a json, slack will show either update the attachment or send a new one without having to use `chat_postMessage`. If you wish to use this feature with Slackify, you only need to return either a json of an attachment or a plain text string when you handler method is called. **Your method should always return `nil` otherwise**.
 
 # How to run your own slackify
+
 ## Initial Setup
+
 1. Install slackify in your app by adding the following line in your `Gemfile`:
 
 ```ruby
@@ -193,32 +229,32 @@ bundle install
 
 5. [Proceed to connect your bot to slack](#slack-setup)
 
-
 ## Slack Setup
+
 First, you'll need to create a new app on slack. Head over to [slack api](https://api.slack.com/apps) and create a new app.
 
 1. **Set Slack Secret Token**
 
-    In order to verify that the requets are coming from slack, we'll need to set the slack secret token in slackify. This value can be found as the signing secret in the app credentials section of the basic information page.
+   In order to verify that the requets are coming from slack, we'll need to set the slack secret token in slackify. This value can be found as the signing secret in the app credentials section of the basic information page.
 
 2. **Add a bot user**
-  
-    Under the feature section, click on "bot users". Pick a name for you slack bot and toggle on "Always Show My Bot as Online". Save the setting.
+
+   Under the feature section, click on "bot users". Pick a name for you slack bot and toggle on "Always Show My Bot as Online". Save the setting.
 
 3. **Enable events subscription**
 
-    Under the feature section, click "Events subscription". Turn the feature on and use your app url followed by `/slackify/event`. [Ngrok](https://ngrok.com/) can easily get you a public url if you are developing locally. The app needs to be running when you configure this url. After the url is configured, under the section "Subscribe to Bot Events", add the bot user event `message.im`.
+   Under the feature section, click "Events subscription". Turn the feature on and use your app url followed by `/slackify/event`. [Ngrok](https://ngrok.com/) can easily get you a public url if you are developing locally. The app needs to be running when you configure this url. After the url is configured, under the section "Subscribe to Bot Events", add the bot user event `message.im`.
 
 4. **Activate the interactive components**
-  
-    Under the feature section, click "interactive components". Turn the feature on and use your ngrok url followed by `/slackify/interactive`. Save the setting.
+
+   Under the feature section, click "interactive components". Turn the feature on and use your ngrok url followed by `/slackify/interactive`. Save the setting.
 
 5. **Install the App**
 
-    Under the setting section, click "install app" and proceed to install the app to the workspace. Once the app is installed, go back to the "install app" page and copy the Bot User OAuth Access Token.
+   Under the setting section, click "install app" and proceed to install the app to the workspace. Once the app is installed, go back to the "install app" page and copy the Bot User OAuth Access Token.
 
 6. **Configure Slackify**
-Add a new initializer with the following code
+   Add a new initializer with the following code
 
 ```ruby
 # config/initializers/slackify.rb
@@ -229,7 +265,7 @@ end
 ```
 
 7. **Define handlers specific subtypes** (Optional)
-You can set custom [message subtype](https://api.slack.com/events/message) handlers or custom [event type](https://api.slack.com/events) handlers inside your configuration
+   You can set custom [message subtype](https://api.slack.com/events/message) handlers or custom [event type](https://api.slack.com/events) handlers inside your configuration
 
 ```ruby
 # config/initializers/slackify.rb
@@ -248,7 +284,7 @@ end
 ```
 
 8. **Handle bot messages** (Highly optional)
-If you want your bot to accept other bot messages (which you probably should not do), you can. In the configuration step, you can set an array of whitelisted bot ids.
+   If you want your bot to accept other bot messages (which you probably should not do), you can. In the configuration step, you can set an array of whitelisted bot ids.
 
 ```ruby
 # config/initializers/slackify.rb
@@ -261,6 +297,6 @@ end
 
 **At this point, you are ready to go 😄**
 
-
 # LICENSE
+
 Copyright (c) 2019 Justin Léger, Michel Chatmajian. See [LICENSE](https://github.com/jusleg/slackify/blob/master/LICENSE) for further details.
