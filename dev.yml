@@ -52,3 +52,6 @@ commands:
     aliases: [t]
     run: |
       bin/test-changes "$@"
+  style:
+    desc: "Run rubocop with autocorrect, run sewing-kit formatter"
+    run: rubocop -a -c .rubocop.yml "$@"

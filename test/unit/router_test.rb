@@ -3,11 +3,11 @@
 module Slackify
   class RouterTest < ActiveSupport::TestCase
     test "The proper commands get called when receiving slack messages" do
-      assert_output(/cool_command called/) do
+      assert_log_message(:info, regexp: /cool_command called/) do
         Slackify::Router.call_command('wazza', {})
       end
 
-      assert_output(/another_command called/) do
+      assert_log_message(:info, regexp: /another_command called/) do
         Slackify::Router.call_command('foo', {})
       end
     end
@@ -19,12 +19,12 @@ module Slackify
     end
 
     test "Only one command gets called in the event of two regex match. Only the first match is called" do
-      assert_output(/cool_command called/) do
+      assert_log_message(:info, regexp: /cool_command called/) do
         Slackify::Router.call_command('wazza foo', {})
       end
 
       # checking that we do not output bar
-      assert_output(/^((?!another_command called).)*$/) do
+      assert_log_message(:info, regexp: /^((?!another_command called).)*$/) do
         Slackify::Router.call_command('wazza foo', {})
       end
     end

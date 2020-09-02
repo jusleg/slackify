@@ -6,17 +6,15 @@ require 'rake'
 require 'rake/testtask'
 
 INCLUDE_BRANCH_COMMITS = '--include-branch-commits'
-TEST_ARGV              = ARGV.select { |arg| arg != INCLUDE_BRANCH_COMMITS }
-
-changed_files = %x(git status --porcelain).scan(/^\s*\S+(?: +\S+ ->)? +(.*)$/).flatten
+TEST_ARGV              = ARGV.reject { |arg| arg == INCLUDE_BRANCH_COMMITS }
 
 changed_files = if ARGV.first == INCLUDE_BRANCH_COMMITS
-  %x(git diff --name-only $(git merge-base --fork-point origin/master)..).split("\n")
-elsif ARGV.any?{ |arg| !arg.start_with?('--') }
-  ARGV.select{ |arg| !arg.start_with?('--') }
-else
-  %x(git status --porcelain).scan(/^\s*\S+(?: +\S+ ->)? +(.*)$/).flatten
-end
+                  `git diff --name-only $(git merge-base --fork-point origin/master)..`.split("\n")
+                elsif ARGV.any?{ |arg| !arg.start_with?('--') }
+                  ARGV.reject{ |arg| arg.start_with?('--') }
+                else
+                  `git status --porcelain`.scan(/^\s*\S+(?: +\S+ ->)? +(.*)$/).flatten
+                end
 
 test_files = []
 
@@ -54,6 +52,6 @@ else
     t.libs << 'lib'
     t.test_files = FileList[test_files].exclude("test/fixtures/*")
   end
-  
+
   Rake::Task['test_changes'].invoke
 end

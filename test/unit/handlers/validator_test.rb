@@ -159,7 +159,7 @@ module Slackify
               "description" => 'A nice method',
               "action" => 'cool_command',
               "name" => 'wazzzzzzaaa',
-              "parameters" => [{"integer_param"=> "int"}],
+              "parameters" => [{ "integer_param" => "int" }],
               "regex" => /wazza/,
             }]
           }
