@@ -1,0 +1,4 @@
+# https://services.shopify.io/services/slackify/production
+owners:
+  - Shopify/kernel-resiliency
+classification: library
