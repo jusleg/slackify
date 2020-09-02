@@ -1,9 +1,9 @@
-inherit_from:
-- https://relaxed.ruby.style/rubocop.yml
+inherit_gem:
+  rubocop-shopify: rubocop.yml
 
 Style/MixinUsage:
   Enabled: true
-  Exclude: 
+  Exclude:
     - test/dummy/bin/**/*
 
 Style/ClassVars:

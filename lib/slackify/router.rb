@@ -58,22 +58,22 @@ module Slackify
 
           # grab value accounting for any quotes
           terminating_string = case s.peek(1)
-                               when "'"
-                                 s.skip(/'/)
-                                 /'/
-                               when '"'
-                                 s.skip(/"/)
-                                 /"/
-                               else
-                                 / /
-                               end
+          when "'"
+            s.skip(/'/)
+            /'/
+          when '"'
+            s.skip(/"/)
+            /"/
+          else
+            / /
+          end
           processed_args[current_key.to_sym] = if s.exist?(terminating_string)
-                                                 # grab everything before the next instance of the terminating character
-                                                 s.scan_until(terminating_string)[0..-2]
-                                               else
-                                                 # this is probably wrong unless we were expecting a space, but hit eos
-                                                 s.rest
-                                               end
+            # grab everything before the next instance of the terminating character
+            s.scan_until(terminating_string)[0..-2]
+          else
+            # this is probably wrong unless we were expecting a space, but hit eos
+            s.rest
+          end
         end
 
         # only pass on expected parameters for now.
@@ -81,15 +81,15 @@ module Slackify
         spec.each do |key, value|
           # coerce to the expected type
           processed_spec[key] = case value.fetch(:type, 'string')
-                                when :int
-                                  processed_args[key].to_i
-                                when :float
-                                  processed_args[key].to_f
-                                when :bool
-                                  ActiveModel::Type::Boolean.new.cast(processed_args[key])
-                                else
-                                  processed_args[key]
-                                end
+          when :int
+            processed_args[key].to_i
+          when :float
+            processed_args[key].to_f
+          when :bool
+            ActiveModel::Type::Boolean.new.cast(processed_args[key])
+          else
+            processed_args[key]
+          end
         end
 
         processed_spec

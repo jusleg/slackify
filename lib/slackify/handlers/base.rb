@@ -33,6 +33,7 @@ module Slackify
         # the list of supported handlers
         def inherited(subclass)
           @@supported_handlers.push(subclass.to_s)
+          super
         end
 
         # Show a list of the handlers supported by the app. Since we do

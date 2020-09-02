@@ -17,11 +17,11 @@ class DummyHandler < Slackify::Handlers::Base
       case params["actions"].first["name"]
       when "btn1"
         response[:attachments] = [{
-          "text": "Test"
+          "text": "Test",
         }]
       when "btn2"
         response[:attachments] = [{
-          "text": " Button two has been clicked"
+          "text": " Button two has been clicked",
         }]
       end
       response

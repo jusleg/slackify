@@ -42,7 +42,7 @@ module Slackify
             type: 'modal',
             title: {
               type: 'plain_text',
-              text: 'Modal with inputs'
+              text: 'Modal with inputs',
             },
           },
           actions: [
@@ -50,7 +50,7 @@ module Slackify
               name: "btn1",
               value: "btn1",
               type: "button",
-            }
+            },
           ],
           team: {
             id: "TEAM1234",
@@ -71,7 +71,7 @@ module Slackify
           original_message: {
 
           },
-          trigger_id: "13345224609.738474920.8088930838d88f008e0"
+          trigger_id: "13345224609.738474920.8088930838d88f008e0",
         }.deep_merge(options).to_json,
       }
     end
@@ -85,7 +85,7 @@ module Slackify
               name: "btn1",
               value: "btn1",
               type: "button",
-            }
+            },
           ],
           callback_id: "dummy_handler#cool_command",
           team: {
@@ -106,8 +106,8 @@ module Slackify
           token: "testslacktoken123",
           original_message: {
           },
-          trigger_id: "13345224609.738474920.8088930838d88f008e0"
-        }.deep_merge(options).to_json
+          trigger_id: "13345224609.738474920.8088930838d88f008e0",
+        }.deep_merge(options).to_json,
       }
     end
 

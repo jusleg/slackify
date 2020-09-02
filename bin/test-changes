@@ -9,12 +9,12 @@ INCLUDE_BRANCH_COMMITS = '--include-branch-commits'
 TEST_ARGV              = ARGV.reject { |arg| arg == INCLUDE_BRANCH_COMMITS }
 
 changed_files = if ARGV.first == INCLUDE_BRANCH_COMMITS
-                  `git diff --name-only $(git merge-base --fork-point origin/master)..`.split("\n")
-                elsif ARGV.any?{ |arg| !arg.start_with?('--') }
-                  ARGV.reject{ |arg| arg.start_with?('--') }
-                else
-                  `git status --porcelain`.scan(/^\s*\S+(?: +\S+ ->)? +(.*)$/).flatten
-                end
+  %x(git diff --name-only $(git merge-base --fork-point origin/master)..).split("\n")
+elsif ARGV.any? { |arg| !arg.start_with?('--') }
+  ARGV.reject { |arg| arg.start_with?('--') }
+else
+  %x(git status --porcelain).scan(/^\s*\S+(?: +\S+ ->)? +(.*)$/).flatten
+end
 
 test_files = []
 

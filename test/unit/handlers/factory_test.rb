@@ -11,8 +11,8 @@ module Slackify
               "regex" => /wazza/,
               "action" => 'cool_command',
               "name" => 'wazzzzzzaaa',
-            }]
-          }
+            }],
+          },
         }
 
         handler_struct = Factory.for(handler_hash)

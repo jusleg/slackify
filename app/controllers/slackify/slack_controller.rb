@@ -8,14 +8,14 @@ module Slackify
 
     def event_callback
       if params[:type] == "url_verification"
-        render plain: params["challenge"]
+        render(plain: params["challenge"])
       elsif Slackify.configuration.custom_event_type_handlers[params[:event][:type]]
         handle_custom_event_type
       elsif params[:event][:type] == "message"
         handle_direct_message_event
-        head :ok
+        head(:ok)
       else
-        head :bad_request
+        head(:bad_request)
       end
     end
 
@@ -23,10 +23,10 @@ module Slackify
       parsed_payload = JSON.parse(params[:payload])
 
       callback_id = if parsed_payload.key?('view')
-                      parsed_payload.dig('view', 'callback_id')
-                    else
-                      parsed_payload['callback_id']
-                    end
+        parsed_payload.dig('view', 'callback_id')
+      else
+        parsed_payload['callback_id']
+      end
 
       response = handler_from_callback_id(callback_id).call(parsed_payload)
       if !response.nil?
@@ -34,7 +34,7 @@ module Slackify
           render json: response
         end
       else
-        head :ok
+        head(:ok)
       end
     rescue Timeout::Error
       raise Timeout::Error, "Slack interactive callback timed out for #{callback_id}"
@@ -51,7 +51,7 @@ module Slackify
           render json: response
         end
       else
-        head :ok
+        head(:ok)
       end
     rescue Timeout::Error
       raise Timeout::Error, "Slack slash command callback timed out for command #{params[:command]}"
@@ -60,9 +60,9 @@ module Slackify
     private
 
     def handle_direct_message_event
-      if handler = Slackify.configuration.custom_message_subtype_handlers[params[:event][:subtype]]
+      if (handler = Slackify.configuration.custom_message_subtype_handlers[params[:event][:subtype]])
         handler.handle_event(params[:slack])
-        head :ok
+        head(:ok)
         return
       end
 
@@ -79,7 +79,7 @@ module Slackify
 
     def handle_custom_event_type
       Slackify.configuration.custom_event_type_handlers[params[:event][:type]].handle_event(params[:slack])
-      head :ok
+      head(:ok)
     end
 
     def handler_from_callback_id(callback_id)

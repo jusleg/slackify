@@ -22,7 +22,7 @@ module SlackTokenVerify
         "time difference is #{time_diff}"
       logger.warn(message)
 
-      return head :unauthorized
+      return head(:unauthorized)
     end
 
     signature = "v0:#{timestamp}:#{request_body}"
@@ -34,6 +34,6 @@ module SlackTokenVerify
     message = "Invalid Slack signature received"
     logger.warn(message)
 
-    head :unauthorized
+    head(:unauthorized)
   end
 end
