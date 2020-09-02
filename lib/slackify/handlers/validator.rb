@@ -27,12 +27,12 @@ module Slackify
             if command['base_command'].present?
               command_errors.append('Regex and base_command cannot be used in the same handler.')
             end
-            
+
             if command['parameters'].present?
               command_errors.append('Regex and parameters cannot be used in the same handler.')
             end
           end
-          
+
           unless command['regex'].nil? || command['regex'].is_a?(Regexp)
             command_errors.append('No regex was provided.')
           end
