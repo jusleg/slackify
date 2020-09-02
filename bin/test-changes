@@ -1,0 +1,59 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'pathname'
+require 'rake'
+require 'rake/testtask'
+
+INCLUDE_BRANCH_COMMITS = '--include-branch-commits'
+TEST_ARGV              = ARGV.select { |arg| arg != INCLUDE_BRANCH_COMMITS }
+
+changed_files = %x(git status --porcelain).scan(/^\s*\S+(?: +\S+ ->)? +(.*)$/).flatten
+
+changed_files = if ARGV.first == INCLUDE_BRANCH_COMMITS
+  %x(git diff --name-only $(git merge-base --fork-point origin/master)..).split("\n")
+elsif ARGV.any?{ |arg| !arg.start_with?('--') }
+  ARGV.select{ |arg| !arg.start_with?('--') }
+else
+  %x(git status --porcelain).scan(/^\s*\S+(?: +\S+ ->)? +(.*)$/).flatten
+end
+
+test_files = []
+
+changed_files.grep(/\.rb\z/).each do |file|
+  if file =~ /_test\.rb\z/ && Pathname.new(file).expand_path.file?
+    test_files << file
+    next
+  end
+
+  test_file = file.sub(/^app/, 'test').sub(/\.rb$/, '_test.rb')
+  test_file = test_file.sub(/^(eager)?lib/, 'test/lib')
+  test_file = test_file.sub(%r{^db/maintenance}, 'test/unit')
+
+  if Pathname.new(test_file).expand_path.file?
+    test_files << test_file
+  end
+end
+
+test_files = test_files.uniq
+
+if ARGV.include?('--all')
+  test_files = ['test/**/*_test.rb']
+end
+
+if test_files.empty?
+  puts "No test files to run based on your changes."
+else
+  puts "The following test files will be run:"
+  test_files.each { |file| puts "- #{file}" }
+
+  exit if ARGV.include?('--dry-run')
+
+  Rake::TestTask.new(:test_changes) do |t|
+    t.libs << 'test'
+    t.libs << 'lib'
+    t.test_files = FileList[test_files].exclude("test/fixtures/*")
+  end
+  
+  Rake::Task['test_changes'].invoke
+end

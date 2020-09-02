@@ -1,0 +1,54 @@
+name: slackify
+
+type: ruby
+
+up:
+  - ruby: 2.7.1
+  - bundler
+
+commands:
+  console:
+    desc: "start a console"
+    run: bin/console
+  run:
+    desc: "start the application"
+    run: bin/run
+  # Tests
+  test:
+    syntax:
+      argument: file
+      optional: --include-branch-commits --all --component other_args...
+    desc: run tests related to changes, branch changes, or run specific tests
+    long_desc: |
+      {{bold:Default}}
+      =======
+      Run tests based on the {{italic:current diff}} (aka currently uncommitted changed files).
+      Attempts to find tests to run using logic defined in {{italic:bin/test-changes}}.
+
+        Examples:
+        {{command:dev test}}
+        {{command:dev t}}
+
+      {{bold:--include-branch-commits}}
+      ========================
+      Include {{command:--include-branch-commits}} to run tests based on all changes on a branch, not just the current diff. Must be supplied as the first argument.
+
+        Examples:
+        {{command:dev test --include-branch-commits}}
+
+      {{bold:Test a specific file}}
+      =========================
+      Include a {{command:file}} argument to run tests for that file.
+
+        Examples:
+        {{command:dev test test/path/to/file_test.rb}}
+
+      {{bold:--all}}
+      =========================
+      Include {{command:-all}} to run all the tests in the repo.
+
+        Examples:
+        {{command:dev test --all}}
+    aliases: [t]
+    run: |
+      bin/test-changes "$@"
