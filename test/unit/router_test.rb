@@ -18,6 +18,12 @@ module Slackify
       end
     end
 
+    test "parameters can be processed by a custom parser" do
+      assert_output(/this takes a user arg; user: Doug Edey/) do
+        Slackify::Router.call_command('method4 user_param=W12345TG', {})
+      end
+    end
+
     test "Only one command gets called in the event of two regex match. Only the first match is called" do
       assert_output(/cool_command called/) do
         Slackify::Router.call_command('wazza foo', {})

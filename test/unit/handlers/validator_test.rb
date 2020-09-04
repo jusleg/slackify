@@ -191,7 +191,30 @@ module Slackify
           Validator.verify_handler_integrity(handler_hash)
         end
         assert_equal(
-          "dummy_handler is not valid: [wazzzzzzaaa]: Invalid parameter type for: integer_param, 'this_is_not_valid'.",
+          "dummy_handler is not valid: [wazzzzzzaaa]: Failed to find the custom class for: integer_param, 'this_is_not_valid'.",
+          exception.message
+        )
+      end
+
+      test "#verify_handler_integrity raises error when parameter class does not extend Slackify::Parameter" do
+        handler_hash = {
+          "dummy_handler" => {
+            "commands" => [{
+              "description" => 'A nice method',
+              "action" => 'cool_command',
+              "name" => 'wazzzzzzaaa',
+              "base_command" => "foo",
+              "parameters" => [{ "integer_param" => "NotAParam" }],
+            }]
+          }
+        }
+
+        exception = assert_raises(Exceptions::InvalidHandler) do
+          Validator.verify_handler_integrity(handler_hash)
+        end
+        assert_equal(
+          "dummy_handler is not valid: [wazzzzzzaaa]: Invalid parameter type for: integer_param, 'NotAParam'.\n"\
+            "If this is a custom parameter, make sure it inherits from Slackify::Parameter",
           exception.message
         )
       end

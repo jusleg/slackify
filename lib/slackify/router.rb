@@ -80,15 +80,18 @@ module Slackify
         processed_spec = {}
         spec.each do |key, value|
           # coerce to the expected type
-          processed_spec[key] = case value.fetch(:type, 'string')
+          type = value.fetch(:type, 'string')
+          processed_spec[key] = case type
                                 when :int
                                   processed_args[key].to_i
                                 when :float
                                   processed_args[key].to_f
-                                when :bool
+                                when :boolean
                                   ActiveModel::Type::Boolean.new.cast(processed_args[key])
-                                else
+                                when :string
                                   processed_args[key]
+                                else
+                                  Object.const_get(type).new(processed_args[key]).parse
                                 end
         end
 

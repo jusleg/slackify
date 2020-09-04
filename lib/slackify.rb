@@ -4,6 +4,7 @@ require 'slackify/configuration'
 require 'slackify/engine'
 require 'slackify/exceptions'
 require 'slackify/handlers'
+require 'slackify/parameter'
 require 'slackify/router'
 
 module Slackify

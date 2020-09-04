@@ -10,6 +10,7 @@ Style/ClassVars:
   Enabled: true
   Exclude:
     - lib/slackify/handlers/base.rb
+    - lib/slackify/parameter.rb
 
 AllCops:
   TargetRubyVersion: 2.6
