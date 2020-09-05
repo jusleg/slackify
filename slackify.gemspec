@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'slackify'
-  s.version     = '0.3.2'
+  s.version     = '0.3.3'
   s.date        = '2019-12-11'
   s.summary     = 'Slackbot framework for Rails using the Events API'
   s.description = 'Slackbot framework for Rails using the Events API. Supports events, interactive messages and slash commands.'

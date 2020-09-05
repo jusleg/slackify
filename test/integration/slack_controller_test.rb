@@ -143,7 +143,7 @@ module Slackify
       assert_response :unauthorized
     end
 
-    test "#slash_command_callback raises an exception if the handler method is not whitelisted" do
+    test "#slash_command_callback raises an exception if the handler method is not approved" do
       DummyHandler.expects(:slash_command_not_permitted).never
       assert_raise Exceptions::MissingSlashPermission do
         post "/slackify/slash/dummy_handler/slash_command_not_permitted", as: :json,

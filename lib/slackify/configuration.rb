@@ -6,7 +6,7 @@ module Slackify
   # Where the configuration for Slackify lives
   class Configuration
     attr_reader :custom_message_subtype_handlers, :slack_bot_token, :unhandled_handler, :custom_event_type_handlers
-    attr_accessor :handlers, :slack_secret_token, :slack_client, :whitelisted_bot_ids
+    attr_accessor :handlers, :slack_secret_token, :slack_client, :approved_bot_ids
 
     def initialize
       @slack_bot_token = nil
@@ -16,7 +16,7 @@ module Slackify
       @custom_message_subtype_handlers = {}
       @custom_event_type_handlers = {}
       @unhandled_handler = Handlers::UnhandledHandler
-      @whitelisted_bot_ids = []
+      @approved_bot_ids = []
     end
 
     # Set your own unhandled handler
