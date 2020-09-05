@@ -17,3 +17,10 @@
           - bool_param: boolean
         action: method_3_command
         name: method 3
+
+      - description: method 4 with a custom parsed parameter
+        base_command: "method4"
+        parameters:
+          - user_param: UserParam
+        action: method_4_command
+        name: method 4

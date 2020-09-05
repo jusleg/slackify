@@ -44,5 +44,10 @@ class DummyHandler < Slackify::Handlers::Base
         "string: #{params[:command_arguments][:string_param]}, "\
         "float: #{params[:command_arguments][:float_param]}"
     end
+
+    def method_4_command(params)
+      puts "this takes a user arg; "\
+        "user: #{params[:command_arguments][:user_param]}"
+    end
   end
 end

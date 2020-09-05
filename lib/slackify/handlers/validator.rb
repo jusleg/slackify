@@ -72,7 +72,13 @@ module Slackify
 
             next if VALID_PARAMETER_TYPES.include?(type.to_sym)
 
-            errors << "Invalid parameter type for: #{key}, '#{type}'."
+            type.constantize
+            next if Slackify::Parameter.supported_parameters.include?(type)
+
+            errors << "Invalid parameter type for: #{key}, '#{type}'.\n"\
+              "If this is a custom parameter, make sure it inherits from Slackify::Parameter"
+          rescue NameError
+            errors << "Failed to find the custom class for: #{key}, '#{type}'."
           end
           errors
         end
