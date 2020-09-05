@@ -125,7 +125,7 @@ module Slackify
           Validator.verify_handler_integrity(handler_hash)
         end
         assert_equal(
-          "dummy_handler is not valid: [wazzzzzzaaa]: No base command was provided.",
+          "dummy_handler is not valid: [wazzzzzzaaa]: Invalid base command provided, it must be a string.",
           exception.message
         )
       end
@@ -170,6 +170,28 @@ module Slackify
         end
         assert_equal(
           "dummy_handler is not valid: [wazzzzzzaaa]: Regex and parameters cannot be used in the same handler.",
+          exception.message
+        )
+      end
+
+      test "#verify_handler_integrity raises error when parameter type is invalid" do
+        handler_hash = {
+          "dummy_handler" => {
+            "commands" => [{
+              "description" => 'A nice method',
+              "action" => 'cool_command',
+              "name" => 'wazzzzzzaaa',
+              "base_command" => "foo",
+              "parameters" => [{ "integer_param" => "this_is_not_valid" }],
+            }]
+          }
+        }
+
+        exception = assert_raises(Exceptions::InvalidHandler) do
+          Validator.verify_handler_integrity(handler_hash)
+        end
+        assert_equal(
+          "dummy_handler is not valid: [wazzzzzzaaa]: Invalid parameter type for: integer_param, 'this_is_not_valid'.",
           exception.message
         )
       end

@@ -87,7 +87,7 @@ We can rewrite the command above to
 
 And call the command with
 
-`/slackify repeat sentence="Why hullo there" times=10`
+`slackify repeat sentence="Why hullo there" times=10`
 
 This will supply a command arguments that are typed and coerced to the defined types:
 

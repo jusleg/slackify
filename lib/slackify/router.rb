@@ -26,7 +26,7 @@ module Slackify
 
           Slackify.configuration.unhandled_handler.unhandled(params)
         else
-          new_params = params.merge({ command_arguments: extract_arguments(message, command) })
+          new_params = params.merge( command_arguments: extract_arguments(message, command) )
 
           command.handler.call(new_params)
         end
