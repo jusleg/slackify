@@ -22,7 +22,7 @@ module Slackify
 
         handler_command = handler_struct.commands.first
 
-        assert_equal /wazza/, handler_command.regex
+        assert_equal(/wazza/, handler_command.regex)
         assert_equal 'A nice method', handler_command.description
         assert_equal DummyHandler.method(:cool_command), handler_command.handler
       end

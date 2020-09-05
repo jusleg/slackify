@@ -82,14 +82,14 @@ module Slackify
     test "#interactive_callback returns the proper following blocks" do
       # Setting up the Slack Ruby Client Mock
       options = { view: { callback_id: "dummy_handler#button_clicked" }, actions: [{ "name" => "btn1", "value" => "btn1", "type" => "button" }] }
-      params = build_slack_interactive_callback(options)
+      params = build_slack_interactive_callback(**options)
 
       post @interactive_callback_url, as: :json, headers: build_webhook_headers(params), params: params
       assert_equal "{\"attachments\":[{\"text\":\"Test\"}]}", response.body
       assert_response :ok
 
       options = { view: { callback_id: "dummy_handler#button_clicked" }, actions: [{ "name" => "btn2", "value" => "btn2", "type" => "button" }] }
-      params = build_slack_interactive_callback(options)
+      params = build_slack_interactive_callback(**options)
 
       post @interactive_callback_url, as: :json, headers: build_webhook_headers(params), params: params
       assert_equal "{\"attachments\":[{\"text\":\" Button two has been clicked\"}]}", response.body
@@ -98,15 +98,15 @@ module Slackify
 
     test "#interactive_callback returns the proper following attachement" do
       # Setting up the Slack Ruby Client Mock
-      options = { actions: [{ "name" => "btn1", "value" => "btn1", "type" => "button" }], callback_id: "dummy_handler#button_clicked" }
-      params = build_legacy_slack_interactive_callback(options)
+      options = { actions: [{ "name" => "btn1", "value" => "btn1", "type" => "button" }], view: { callback_id: "dummy_handler#button_clicked" } }
+      params = build_slack_interactive_callback(**options)
 
       post @interactive_callback_url, as: :json, headers: build_webhook_headers(params), params: params
       assert_equal "{\"attachments\":[{\"text\":\"Test\"}]}", response.body
       assert_response :ok
 
-      options = { actions: [{ "name" => "btn2", "value" => "btn2", "type" => "button" }], callback_id: "dummy_handler#button_clicked" }
-      params = build_legacy_slack_interactive_callback(options)
+      options = { actions: [{ "name" => "btn2", "value" => "btn2", "type" => "button" }], view: { callback_id: "dummy_handler#button_clicked" } }
+      params = build_slack_interactive_callback(**options)
 
       post @interactive_callback_url, as: :json, headers: build_webhook_headers(params), params: params
       assert_equal "{\"attachments\":[{\"text\":\" Button two has been clicked\"}]}", response.body
@@ -114,8 +114,8 @@ module Slackify
     end
 
     test "#interactive_callback raises error if the handler is not supported" do
-      options = { view: { actions: [{ "name" => "btn2", "value" => "btn2", "type" => "button" }], callback_id: "random_handler#button_clicked" } }
-      params = build_slack_interactive_callback(options)
+      options = { actions: [{ "name" => "btn2", "value" => "btn2", "type" => "button" }], view: { callback_id: "random_handler#button_clicked" } }
+      params = build_slack_interactive_callback(**options)
 
       assert_raise Slackify::Exceptions::HandlerNotSupported do
         post @interactive_callback_url, as: :json, headers: build_webhook_headers(params), params: params

@@ -22,7 +22,7 @@ module Slackify
         # needs to call a method on a supported handler and that handler needs
         # to explicitly specify which methods are for slash command.
         def allow_slash_method(element)
-          if @allowed_slash_methods
+          if defined?(@allowed_slash_methods) && @allowed_slash_methods
             @allowed_slash_methods.push(*element)
           else
             @allowed_slash_methods = Array(element)
