@@ -1,5 +1,6 @@
-## V0.3.3
+## V0.4.0
 
+- **BREAKING CHANGE:** Use `approved_bot_ids` instead of `whitelisted_bot_ids` ([6243c11](https://github.com/jusleg/slackify/commit'6243c11c3b5e49fa31feb2ebfd9394c362509524)) by [@DougEdey](https://github.com/DougEdey)
 - Add support for named parameters in commands ([PR #12](https://github.com/jusleg/slackify/pull/12)) by [@DougEdey](https://github.com/DougEdey)
 - Add support for custom parameters in commands ([PR #17](https://github.com/jusleg/slackify/pull/17)) by [@DougEdey](https://github.com/DougEdey)
 - Tidy up some tests
