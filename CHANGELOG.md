@@ -4,6 +4,7 @@
 - Add support for named parameters in commands ([PR #12](https://github.com/jusleg/slackify/pull/12)) by [@DougEdey](https://github.com/DougEdey)
 - Add support for custom parameters in commands ([PR #17](https://github.com/jusleg/slackify/pull/17)) by [@DougEdey](https://github.com/DougEdey)
 - Tidy up some tests
+- Force slack-ruby-client to be version 0.15.1 or above to allow for pagination of Conversations
 
 ## V0.3.2
 

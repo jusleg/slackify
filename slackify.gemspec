@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   }
 
   s.add_dependency 'rails'
-  s.add_dependency 'slack-ruby-client'
+  s.add_dependency 'slack-ruby-client', '>= 0.15.1'
   s.add_dependency 'strscan'
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'mocha'
