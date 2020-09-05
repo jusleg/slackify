@@ -101,7 +101,7 @@ When sending an interactive message to a user, slack let's you define the `callb
 
 The code also has an example of a slash command and its handler (`slash_handler.rb`). To add a command on the bot, head to you app configuration on https://api.slack.com/apps and navigate to Slack Commands using the sidebar. Create a new one. The important part is to set the path properly. To bind with the demo handler, you would need to setup the path like this: `/slackify/slash/slash_handler/example_slash`. The format is `/slackify/slash/[handler_name]/[action_name]`. An app shouldn't have many slash commands. Keep in mind that adding a slash command means that the whole organization will see it.
 
-You will need to whitelist the method in the handler to indicate it can be used as a slash command using `allow_slash_method`
+You will need to allow the method in the handler to indicate it can be used as a slash command using `allow_slash_method`
 
 ```ruby
 class DummyHandler < Slackify::Handlers::Base
@@ -284,13 +284,13 @@ end
 ```
 
 8. **Handle bot messages** (Highly optional)
-   If you want your bot to accept other bot messages (which you probably should not do), you can. In the configuration step, you can set an array of whitelisted bot ids.
+   If you want your bot to accept other bot messages (which you probably should not do), you can. In the configuration step, you can set an array of approved bot ids.
 
 ```ruby
 # config/initializers/slackify.rb
 Slackify.configure do |config|
 ...
-config.whitelisted_bot_ids = ['abc123', 'def456']
+config.approved_bot_ids = ['abc123', 'def456']
 ...
 end
 ```

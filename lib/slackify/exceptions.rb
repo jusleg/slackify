@@ -7,7 +7,7 @@ module Slackify
     class HandlerNotSupported < StandardError; end
     # You handler is failing validations
     class InvalidHandler < StandardError; end
-    # The handler method was not whitelisted to be a slash command
+    # The handler method was not approved to be a slash command
     class MissingSlashPermission < StandardError; end
   end
 end

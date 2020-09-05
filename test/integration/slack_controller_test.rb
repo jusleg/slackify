@@ -123,16 +123,13 @@ module Slackify
     end
 
     test "#slash_command_callback calls the correct handler method" do
-      # Passing in the dummy_handler class into url encoded payload
-      params = "action=slash_command_callback&channel_id=DD6S3EGQG&channel_name=directmessage&command=%2Ftest&controller=slack&handler_class=dummy_handler&handler_method=slash_command&response_url=https%3A%2F%2Fhooks.slack.com%2Fcommands%2FTEAM1234%2F479282542757%2Fvrgf0tsH3Hpatycs5Qop3M9S&team_domain=slackify&team_id=TEAM1234&text=famingo&token=Wxb5WWeegLMp4cIAohut26Lo&trigger_id=478980323267.2152147568.e30db4037a528bde78146858cadd4dd6&user_id=USER1234&user_name=jusleg\""
-
       DummyHandler.expects(:slash_command).once
-      post @slash_command_callback_url, as: :json, headers: build_webhook_headers(params), params: params
+      post @slash_command_callback_url, as: :json, headers: build_webhook_headers(default_params), params: default_params
       assert_response :ok
     end
 
     test "#slash_command_callback returns unauthorized with invalid token" do
-      params = "action=slash_command_callback&channel_id=DD6S3EGQG&channel_name=directmessage&command=%2Ftest&controller=slack&handler_class=dummy_handler&handler_method=slash_command&response_url=https%3A%2F%2Fhooks.slack.com%2Fcommands%2FTEAM1234%2F479282542757%2Fvrgf0tsH3Hpatycs5Qop3M9S&team_domain=slackify&team_id=TEAM1234&text=famingo&token=invalidtoken&trigger_id=478980323267.2152147568.e30db4037a528bde78146858cadd4dd6&user_id=USER1234&user_name=jusleg\""
+      params = default_params.merge("token": "invalidtoken")
 
       post @slash_command_callback_url, headers: build_webhook_headers(params, token: "invalidtoken"), params: params
 
@@ -140,32 +137,48 @@ module Slackify
     end
 
     test "#slash_command_callback returns unauthorized when over time limit (3000ms)" do
-      params = "action=slash_command_callback&channel_id=DD6S3EGQG&channel_name=directmessage&command=%2Ftest&controller=slack&handler_class=dummy_handler&handler_method=slash_command&response_url=https%3A%2F%2Fhooks.slack.com%2Fcommands%2FTEAM1234%2F479282542757%2Fvrgf0tsH3Hpatycs5Qop3M9S&team_domain=slackify&team_id=TEAM1234&text=famingo&token=Wxb5WWeegLMp4cIAohut26Lo&trigger_id=478980323267.2152147568.e30db4037a528bde78146858cadd4dd6&user_id=USER1234&user_name=jusleg\""
-
-      post @slash_command_callback_url,
-           headers: build_webhook_headers(params, timestamp: Time.now - 31.seconds), params: params
+      post @slash_command_callback_url, params: default_params,
+                                        headers: build_webhook_headers(default_params, timestamp: Time.now - 3.1.seconds)
 
       assert_response :unauthorized
     end
 
-    test "#slash_command_callback raises an exception if the handler method is not whitelisted" do
-      # Passing in the dummy_handler class into url encoded payload
-      params = "action=slash_command_callback&channel_id=DD6S3EGQG&channel_name=directmessage&command=%2Ftest&controller=slack&handler_class=dummy_handler&handler_method=slash_command_not_permitted&response_url=https%3A%2F%2Fhooks.slack.com%2Fcommands%2FTEAM1234%2F479282542757%2Fvrgf0tsH3Hpatycs5Qop3M9S&team_domain=slackify&team_id=TEAM1234&text=famingo&token=Wxb5WWeegLMp4cIAohut26Lo&trigger_id=478980323267.2152147568.e30db4037a528bde78146858cadd4dd6&user_id=USER1234&user_name=jusleg\""
-
+    test "#slash_command_callback raises an exception if the handler method is not approved" do
       DummyHandler.expects(:slash_command_not_permitted).never
       assert_raise Exceptions::MissingSlashPermission do
-        post "/slackify/slash/dummy_handler/slash_command_not_permitted", as: :json, headers: build_webhook_headers(params), params: params
+        post "/slackify/slash/dummy_handler/slash_command_not_permitted", as: :json,
+                                                                          headers: build_webhook_headers(default_params), params: default_params
       end
     end
 
     test "#slash_command_callback raises an exception if the handler class is not supported" do
-      # Passing in the dummy_handler class into url encoded payload
-      params = "action=slash_command_callback&channel_id=DD6S3EGQG&channel_name=directmessage&command=%2Ftest&controller=slack&handler_class=random_handler_not_permitted&handler_method=slash_command_not_permitted&response_url=https%3A%2F%2Fhooks.slack.com%2Fcommands%2FTEAM1234%2F479282542757%2Fvrgf0tsH3Hpatycs5Qop3M9S&team_domain=slackify&team_id=TEAM1234&text=famingo&token=Wxb5WWeegLMp4cIAohut26Lo&trigger_id=478980323267.2152147568.e30db4037a528bde78146858cadd4dd6&user_id=USER1234&user_name=jusleg\""
-
       DummyHandler.expects(:slash_command_not_permitted).never
       assert_raise Exceptions::HandlerNotSupported do
-        post "/slackify/slash/random_handler_not_permitted/slash_command_not_permitted", as: :json, headers: build_webhook_headers(params), params: params
+        post "/slackify/slash/random_handler_not_permitted/slash_command_not_permitted", as: :json,
+                                                                                         headers: build_webhook_headers(default_params), params: default_params
       end
+    end
+
+    private
+
+    def default_params
+      {
+        "action" => "slash_command_callback",
+        "channel_id" => "DD6S3EGQG",
+        "channel_name" => "directmessage",
+        "command" => "/test",
+        "controller" => "slack",
+        "handler_cl\nass" => "dummy_handler",
+        "handler_method" => "slash_command",
+        "response_url" => "https://hooks.slack.com/commands/TEAM1234/479282542757/vrgf0tsH3Hpatycs5Qop3\nM9S",
+        "team_domain" => "slackify",
+        "team_id" => "TEAM1234",
+        "text" => "famingo",
+        "token" => "Wxb5WWeegLMp4cIAohut26Lo",
+        "trigger_id" => "478980323267.2152147568.e30db4037a528bde78146858cadd4\ndd6",
+        "user_id" => "USER1234",
+        "user_name" => "jusleg"
+      }
     end
   end
 end

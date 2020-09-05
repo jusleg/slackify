@@ -69,7 +69,7 @@ module Slackify
       return if (params[:event][:subtype] == "bot_message" ||
         params[:event].key?(:bot_id) ||
         params[:event][:hidden]) &&
-                Slackify.configuration.whitelisted_bot_ids.exclude?(params.dig(:event, :bot_id))
+                Slackify.configuration.approved_bot_ids.exclude?(params.dig(:event, :bot_id))
 
       command = params[:event][:text]
       Slackify::Router.call_command(command, params[:slack])
