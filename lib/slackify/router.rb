@@ -3,6 +3,12 @@
 module Slackify
   # In charge of routing a message to its proper handler
   class Router
+    MATCHING_QUOTES = {
+      "'": "'",
+      '"': '"',
+      '“': "”",
+    }.freeze
+
     class << self
       # List all available commands
       def all_commands
@@ -57,16 +63,14 @@ module Slackify
           current_key = current_key[0..-2].strip
 
           # grab value accounting for any quotes
-          terminating_string = case s.peek(1)
-                               when "'"
-                                 s.skip(/'/)
-                                 /'/
-                               when '"'
-                                 s.skip(/"/)
-                                 /"/
+          next_char = s.getch
+          terminating_string = if (end_quote = MATCHING_QUOTES[next_char.to_sym])
+                                 /#{end_quote}/
                                else
+                                 s.unscan
                                  / /
                                end
+
           processed_args[current_key.to_sym] = if s.exist?(terminating_string)
                                                  # grab everything before the next instance of the terminating character
                                                  s.scan_until(terminating_string)[0..-2]
