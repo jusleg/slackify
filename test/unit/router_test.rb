@@ -18,6 +18,12 @@ module Slackify
       end
     end
 
+    test "parameters are parsed correctly with various quotes" do
+      assert_output(/this takes args; int: 1, bool: false, string: foo, float: 0.2/) do
+        Slackify::Router.call_command('method3 integer_param=\'1\' string_param="foo" float_param=“0.2” bool_param=false', {})
+      end
+    end
+
     test "parameters can be processed by a custom parser" do
       assert_output(/this takes a user arg; user: Doug Edey/) do
         Slackify::Router.call_command('method4 user_param=W12345TG', {})
