@@ -9,6 +9,7 @@ module Slackify
       # Any class inheriting from Slackify::Parameter will be added to
       # the list of supported parameters
       def inherited(subclass)
+        super
         @@supported_parameters.push(subclass.to_s)
       end
 

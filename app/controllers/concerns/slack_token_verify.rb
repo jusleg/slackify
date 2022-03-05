@@ -26,8 +26,7 @@ module SlackTokenVerify
     end
 
     signature = "v0:#{timestamp}:#{request_body}"
-    calculated_hmac = "v0=" +
-                      OpenSSL::HMAC.hexdigest("sha256", Slackify.configuration.slack_secret_token, signature)
+    calculated_hmac = "v0=#{OpenSSL::HMAC.hexdigest('sha256', Slackify.configuration.slack_secret_token, signature)}"
 
     return if ActiveSupport::SecurityUtils.secure_compare(calculated_hmac, hmac_header)
 

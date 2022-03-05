@@ -113,8 +113,7 @@ module Slackify
 
     def build_webhook_headers(params, timestamp: Time.now, token: "123abcslacksecrettokenabc123")
       {
-        "X-Slack-Signature": "v0=" +
-          OpenSSL::HMAC.hexdigest("sha256", token, "v0:#{timestamp.to_i}:#{params.to_json}"),
+        "X-Slack-Signature": "v0=#{OpenSSL::HMAC.hexdigest('sha256', token, "v0:#{timestamp.to_i}:#{params.to_json}")}",
         "X-Slack-Request-Timestamp": timestamp.to_i,
       }
     end
