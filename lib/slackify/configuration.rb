@@ -36,7 +36,7 @@ module Slackify
     # Set the token that we will use to connect to slack
     def slack_bot_token=(token)
       @slack_bot_token = token
-      @slack_client = Slack::Web::Client.new(token: token).freeze
+      @slack_client = Slack::Web::Client.new(token: token)
     end
 
     # Set a handler for a specific message subtype

@@ -2,6 +2,7 @@
 
 class UserParam < Slackify::Parameter
   def initialize(value)
+    super()
     @value = value
   end
 

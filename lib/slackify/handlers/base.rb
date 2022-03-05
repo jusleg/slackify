@@ -32,6 +32,7 @@ module Slackify
         # Any class inheriting from Slackify::Handler::Base will be added to
         # the list of supported handlers
         def inherited(subclass)
+          super
           @@supported_handlers.push(subclass.to_s)
         end
 
