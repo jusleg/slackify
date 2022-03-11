@@ -1,3 +1,11 @@
+## V0.4.2
+
+- Adds ruby 3.0+ support with `YAML.unsafe_load_file` ([PR #24](https://github.com/jusleg/slackify/pull/24)) by [@stevemelamedshopify](https://github.com/stevemelamedshopify)
+
+## V0.4.1
+
+- Fixes client freezing ([PR #22](https://github.com/jusleg/slackify/pull/22)) by [@tarynmusgrave](https://github.com/tarynmusgrave)
+
 ## V0.4.0
 
 - **BREAKING CHANGE:** Use `approved_bot_ids` instead of `whitelisted_bot_ids` ([6243c11](https://github.com/jusleg/slackify/commit'6243c11c3b5e49fa31feb2ebfd9394c362509524)) by [@DougEdey](https://github.com/DougEdey)
