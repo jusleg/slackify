@@ -71,7 +71,11 @@ module Slackify
     def read_handlers_yaml
       raise 'config/handlers.yml does not exist' unless File.exist?("#{Rails.root}/config/handlers.yml")
 
-      YAML.load_file("#{Rails.root}/config/handlers.yml") || []
+      if YAML.respond_to?(:unsafe_load_file)
+        YAML.unsafe_load_file(Rails.root.join("config/handlers.yml")) || []
+      else
+        YAML.load_file("#{Rails.root}/config/handlers.yml") || []
+      end
     end
   end
 end
