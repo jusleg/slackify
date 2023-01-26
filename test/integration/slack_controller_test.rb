@@ -79,6 +79,12 @@ module Slackify
       post @interactive_callback_url, as: :json, headers: build_webhook_headers(params), params: params
     end
 
+    test "#interactive_callback call the proper handler when action_id is sent" do
+      DummyHandler.expects(:cool_command).once
+      params = build_slack_interactive_action
+      post @interactive_callback_url, as: :json, headers: build_webhook_headers(params), params: params
+    end
+
     test "#interactive_callback returns the proper following blocks" do
       # Setting up the Slack Ruby Client Mock
       options = { view: { callback_id: "dummy_handler#button_clicked" }, actions: [{ "name" => "btn1", "value" => "btn1", "type" => "button" }] }
