@@ -76,6 +76,57 @@ module Slackify
       }
     end
 
+    def build_slack_interactive_action(**options)
+      {
+        payload: {
+          "type": "block_actions",
+          "user": {
+            "id": "USER_ID",
+            "username": "USERNAME",
+            "name": "USERNAME",
+            "team_id": "TEAM_ID"
+          },
+          "api_app_id": "API_APP_ID",
+          "token": "TOKEN",
+          "container": {
+            "type": "message",
+            "message_ts": "1674752364.004700",
+            "channel_id": "CHANNEL_ID",
+            "is_ephemeral": true
+          },
+          "trigger_id": "TRIGGER_ID",
+          "team": {
+            "id": "TEAM_ID",
+            "domain": "TEAM_DOMAIN"
+          },
+          "is_enterprise_install": false,
+          "channel": {
+            "id": "CHANNEL_ID",
+            "name": "CHANNEL_NAME"
+          },
+          "state": {
+            "values": {}
+          },
+          "response_url": "https://hooks.slack.com/actions/ABC/IJK/XYZ",
+          "actions": [
+            {
+              "action_id": "dummy_handler#cool_command",
+              "block_id": "BLOCK_ID",
+              "text": {
+                "type": "plain_text",
+                "text": "Click Me",
+                "emoji": true
+              },
+              "value": "click_me_123",
+              "style": "primary",
+              "type": "button",
+              "action_ts": "1674752368.385612"
+            }
+          ]
+        }.deep_merge(options).to_json,
+      }
+    end
+
     def build_legacy_slack_interactive_callback(**options)
       {
         payload: {
