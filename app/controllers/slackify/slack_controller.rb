@@ -21,16 +21,13 @@ module Slackify
 
     def interactive_callback
       parsed_payload = JSON.parse(params[:payload])
-      if parsed_payload['type'] == 'interactive_message'
-        callback_id = if parsed_payload.key?('view')
-                        parsed_payload.dig('view', 'callback_id')
-                      else
-                        parsed_payload['callback_id']
-                      end
-
-      elsif parsed_payload['type'] == 'block_actions'
-        callback_id = parsed_payload['actions'].first['action_id']
-      end
+      callback_id = if parsed_payload['type'] == 'block_actions'
+                      parsed_payload['actions'].first['action_id']
+                    elsif parsed_payload.key?('view')
+                      parsed_payload.dig('view', 'callback_id')
+                    else
+                      parsed_payload['callback_id']
+                    end
 
       response = handler_from_callback_id(callback_id).call(parsed_payload)
       if !response.nil?
